@@ -1,0 +1,154 @@
+//GERA SINAL DA RODA FÔNICA 60-2 DENTES @ 3000 rpm
+
+#include <16f877A.h>
+#include <stdio.h>
+#include <stdlib.h>
+#use delay (clock=20000000)
+#fuses HS, NOWDT, PUT, BROWNOUT, LVP, DEBUG
+#zero_RAM
+int x,dente;
+#int_timer1
+
+void trata_int_timer1()
+	{
+		if(x==1)
+			{
+				set_timer1(65286);
+				x=0;
+				dente++;
+				if(dente<59)output_high(pin_c0);
+				if(dente==60)dente=0;
+			}
+		else
+			{
+				set_timer1(64121);
+				x=1;
+				output_low(pin_c0);
+  			}
+	}
+
+ void main()
+	 {
+		 setup_adc_ports(RA0_RA1_RA3_ANALOG);
+		 setup_adc(ADC_CLOCK_DIV_8);
+		 setup_psp(PSP_DISABLED);
+		 setup_spi(FALSE);
+		 setup_timer_0(RTCC_INTERNAL|RTCC_DIV_1);
+		 setup_timer_1(T1_INTERNAL|T1_DIV_BY_1);
+		 setup_timer_2(T2_DIV_BY_4,250,1);
+		 set_tris_a(0xFF);
+		 set_tris_b(0xFF);
+		 set_tris_c(0xFE);
+		 set_tris_d(0x00);
+		 set_tris_e(0x00);
+		 disable_interrupts(global);
+		 X=1;
+		 dente=0;
+		 output_low(pin_c0);
+		 enable_interrupts(global);
+		 set_timer1(64121);
+		 clear_interrupt(int_timer1);
+		 enable_interrupts(int_timer1);
+		 while(true);
+	}
+
+
+
+/*
+
+   
+void comando() //configura o LCD
+{
+ output_low(pin_e0);
+ output_low(pin_e1);
+ delay_us(5);
+ output_high(pin_e1);
+ delay_us(10);
+ output_low(pin_e1);
+ delay_us(5); //gero o pulso
+}
+
+void escrita() //habilita a escrita
+{
+ output_high(pin_e0);
+ output_low(pin_e1);
+ delay_us(5);
+ output_high(pin_e1);
+ delay_us(10);
+ output_low(pin_e1);
+ delay_us(5);
+}
+
+void inicializacao_lcd() //segue os passos da receita de bolo
+{
+ delay_ms(15);
+ output_d(0x30); //conteudo em hexa, tem que gera pulso, portanto chama a subrotina comando, gera os pulsos e volta
+ comando();
+ delay_ms(40); //segue receita
+ output_d(0x30); //mesmo comando, mais não é necessário
+ comando(); //novamente vai precisar do novo pulso
+ delay_us(100);
+ output_d(0x30); //mesmo comando, mais não é necessário
+ comando(); //novamente vai precisar do novo pulso
+ delay_us(40);//receita
+ output_d(0x38); //segue a recita, numero em hexa = x
+ comando();
+ delay_us(40);
+ output_d(0x01);//limpa display e posiciona o cursor na 1linha da esquerda
+ comando(); //gera pulso
+ delay_ms(2);//não aceita numero quebrado, arredonda ou muda de unidade
+ output_d(0x0c);//elimine o comando para ligar o display sem cursos
+ comando();
+ delay_us(40);
+ output_d(0x06);//estabelece o modo de operação
+ comando();
+ delay_us(40);
+}
+
+
+ void main() //programa começa aqui
+ {
+
+
+   setup_adc_ports(RA0_RA1_RA3_ANALOG);//vai configurar a entrada das portas
+   setup_adc(ADC_CLOCK_DIV_8);//vai dividir po oito e configurar o adc
+   setup_psp(PSP_DISABLED);
+   setup_spi(FALSE);
+   setup_timer_0(RTCC_INTERNAL|RTCC_DIV_1);//processo de conversao nao meche com timer
+   setup_timer_1(T1_INTERNAL|T1_DIV_BY_1);
+   setup_timer_2(T2_DIV_BY_4,250,1);//bloco PWM trabalha no timer 2, precisa configurar ele PAGINA 212 DO LIVRO E XEROX
+   
+
+
+   set_tris_a(0xFF); //RA1 vai ser uma entrada analógica, tem que configurar
+   set_tris_b(0xFF);//não usa
+   set_tris_c(0xF7);// RC3 serao usado, tem que ser configurados como saida
+   set_tris_d(0x00);//saida do micro O = 0, entrada do LCD
+   set_tris_e(0x00);//tambem saida
+
+   disable_interrupts(global);
+   delay_us(30);//tempo necessario para as tensao de entrada e saida ficarem iguais
+   //agora pode fazer a conversao
+   //o resultado da conversao, joga na variavel x
+   inicializacao_lcd();//AGORA TEM QUE CHAMAR A INICIALIZAÇÃO, zera o LCD
+
+   output_d(0x82);//começa a escrever na coluna 2
+   comando();
+   delay_us(40);
+   output_d(0x4f);//o
+   escrita();
+   output_d(0x4B);//k
+   escrita();
+   
+   X=1;
+   dente=0;
+   output_low(pin_c3);
+   enable_interrupts(global);
+   set_timer1(65253);
+   clear_interrupt(int_timer1);
+   enable_interrupts(int_timer1); 
+   while(true);
+  
+   }
+  
+*/
