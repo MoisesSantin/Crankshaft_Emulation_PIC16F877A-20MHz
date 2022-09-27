@@ -70,6 +70,16 @@ __connection_failed_report*
 *.su
 *.idb
 *.pdb
+*.cof
+*.err
+*.esym
+*.lst
+*.mcp
+*.mcs
+*.mcw
+*.sta
+*.sym
+*.tre
 
 # Kernel Module Compile Results
 *.mod*
